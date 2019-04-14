@@ -26,10 +26,18 @@ public class RequesterService {
 	public List<Requester> findByIdOrSave(List<Requester> requesters) {
 		List<Requester> returnRequester = new ArrayList<Requester>();
 		requesters.forEach(requester->{
-			if(this.findById(requester.getId()) != null) {
-				returnRequester.add(this.findById(requester.getId()));
-			}else {
-				returnRequester.add(this.save(requester));
+			try {
+				if(requester.getId() == null) {
+					Requester newRequester = new Requester();
+					newRequester.setName(requester.getName());
+					returnRequester.add(this.requesterRepository.saveAndFlush(newRequester));
+				}else if(this.findById(requester.getId()) instanceof Requester) {
+					returnRequester.add(this.findById(requester.getId()));
+				}else if(requester instanceof Requester) {
+					returnRequester.add(this.save(requester));
+				}
+			} catch (Exception e) {
+				throw(e);
 			}
 		});
 		return returnRequester;

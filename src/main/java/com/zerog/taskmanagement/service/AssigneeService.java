@@ -26,10 +26,18 @@ public class AssigneeService {
 	public List<Assignee> findByIdOrSave(List<Assignee> assignees) {
 		List<Assignee> returnAssignee = new ArrayList<Assignee>();
 		assignees.forEach(assignee->{
-			if(this.findById(assignee.getId()) != null) {
-				returnAssignee.add(this.findById(assignee.getId()));
-			}else {
-				returnAssignee.add(this.save(assignee));
+			try {
+				if(assignee.getId() == null) {
+					Assignee newAssignee = new Assignee();
+					newAssignee.setName(assignee.getName());
+					returnAssignee.add(this.assigneeRepository.saveAndFlush(newAssignee));
+				}else if(this.findById(assignee.getId()) instanceof Assignee) {
+					returnAssignee.add(this.findById(assignee.getId()));
+				}else if(assignee instanceof Assignee) {
+					returnAssignee.add(this.save(assignee));
+				}
+			} catch (Exception e) {
+				throw(e);
 			}
 		});
 		return returnAssignee;

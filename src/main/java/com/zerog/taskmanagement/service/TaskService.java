@@ -30,13 +30,11 @@ public class TaskService {
 	
 	public Task save(Task task) {
 		if(task.getAssignee() != null) {
-			assigneeService.findByIdOrSave(task.getAssignee());
+			task.setAssignee(assigneeService.findByIdOrSave(task.getAssignee()));
 		}
-		
 		if(task.getRequesters() != null) {
-			requesterService.findByIdOrSave(task.getRequesters());
+			task.setRequesters(requesterService.findByIdOrSave(task.getRequesters()));
 		}
-		
 		return taskRepository.saveAndFlush(task);
 	}
 	
