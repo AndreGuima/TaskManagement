@@ -38,9 +38,9 @@ public class TaskController {
 		return this.taskService.save(task);
 	}
 	
-	@PutMapping
-	public Task update(Task task) {
-		return this.taskService.update(task);
+	@PutMapping("{id}")
+	public Task update(@PathVariable("id") Long id, @RequestBody Task task) {
+		return this.taskService.update(id, task);
 	}
 	
 	@DeleteMapping("{id}")

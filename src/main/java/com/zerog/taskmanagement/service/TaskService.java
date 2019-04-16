@@ -38,8 +38,16 @@ public class TaskService {
 		return taskRepository.saveAndFlush(task);
 	}
 	
-	public Task update(Task task) {
-		return this.taskRepository.save(task);
+	public Task update(Long id, Task updatedTask) {
+		Task task = this.taskRepository.findById(id).orElseThrow(null);
+		task.setSummary(updatedTask.getSummary());
+		task.setDescription(updatedTask.getDescription());
+		task.setAssignee(updatedTask.getAssignee());
+		task.setRequesters(updatedTask.getRequesters());
+		task.setCreatedDate(updatedTask.getCreatedDate());
+		task.setUpdatedDate(updatedTask.getUpdatedDate());
+		this.taskRepository.flush();
+		return task;
 	}
 	
 	public void delete(Task task) {
