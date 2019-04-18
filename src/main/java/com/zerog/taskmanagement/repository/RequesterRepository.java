@@ -8,4 +8,6 @@ import com.zerog.taskmanagement.model.Requester;
 @Repository
 public interface RequesterRepository extends JpaRepository<Requester, Long> {
 
+	Requester findByName(String name);
+
 }
