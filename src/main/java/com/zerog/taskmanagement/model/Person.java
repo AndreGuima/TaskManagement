@@ -1,5 +1,6 @@
 package com.zerog.taskmanagement.model;
 
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,6 +17,7 @@ public class Person {
 	private @Id Long id;
 	
 	@NotNull
+	@Column(unique=true)
 	private String name;
 
 }

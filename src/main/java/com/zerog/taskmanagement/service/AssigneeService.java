@@ -6,41 +6,56 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.zerog.taskmanagement.exception.AssigneeNotFoundException;
 import com.zerog.taskmanagement.model.Assignee;
 import com.zerog.taskmanagement.repository.AssigneeRepository;
 
 @Service
 public class AssigneeService {
-	
+
 	@Autowired
 	AssigneeRepository assigneeRepository;
-	
+
 	public Assignee findById(Long id) {
-		return this.assigneeRepository.findById(id).orElseThrow(null);
+		return this.assigneeRepository.findById(id)
+				.orElseThrow(() -> new AssigneeNotFoundException("Assignee not found " + id));
 	}
-	
+
 	public Assignee save(Assignee assignee) {
 		return this.assigneeRepository.save(assignee);
 	}
 
 	public List<Assignee> findByIdOrSave(List<Assignee> assignees) {
 		List<Assignee> returnAssignee = new ArrayList<Assignee>();
-		assignees.forEach(assignee->{
+		assignees.forEach(assignee -> {
 			try {
-				if(assignee.getId() == null) {
+				if (assignee.getId() == null) {
 					Assignee newAssignee = new Assignee();
 					newAssignee.setName(assignee.getName());
 					returnAssignee.add(this.assigneeRepository.saveAndFlush(newAssignee));
-				}else if(this.findById(assignee.getId()) instanceof Assignee) {
+				} else if (this.findById(assignee.getId()) instanceof Assignee) {
 					returnAssignee.add(this.findById(assignee.getId()));
-				}else if(assignee instanceof Assignee) {
+				} else if (assignee instanceof Assignee) {
 					returnAssignee.add(this.save(assignee));
 				}
 			} catch (Exception e) {
-				throw(e);
+				throw (e);
 			}
 		});
 		return returnAssignee;
 	}
-		
+
+	public List<Assignee> findAll() {
+		return this.assigneeRepository.findAll();
+	}
+
+	public void delete(Long id) {
+		Assignee assignee = this.findById(id);
+		if (assignee != null) {
+			this.assigneeRepository.delete(assignee);
+		} else {
+			throw new AssigneeNotFoundException("Assignee not found " + id);
+		}
+	}
+
 }
